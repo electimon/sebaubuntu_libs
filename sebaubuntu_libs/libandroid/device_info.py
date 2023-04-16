@@ -48,6 +48,12 @@ FIRST_API_LEVEL = ["ro.product.first_api_level"]
 PRODUCT_CHARACTERISTICS = ["ro.build.characteristics"]
 APEX_UPDATABLE = ["ro.apex.updatable"]
 
+PLATFORM_MAPPING = {
+	"sm6150": "sm6150",
+	"holi": "sm4350",
+	"bengal": "sm4250"
+}
+
 class DeviceArch(Enum):
 	def __new__(cls, *args, **kwargs):
 		value = len(cls.__members__) + 1
@@ -148,6 +154,7 @@ class DeviceInfo:
 
 		self.bootloader_board_name = self.get_first_prop(BOOTLOADER_BOARD_NAME)
 		self.platform = self.get_first_prop(DEVICE_PLATFORM, default="default")
+		self.common_platform = self.translate_platform(self.platform)
 		self.device_is_ab = self.get_first_prop(DEVICE_IS_AB, data_type=bool_cast, default=False)
 		self.device_uses_dynamic_partitions = self.get_first_prop(DEVICE_USES_DYNAMIC_PARTITIONS, data_type=bool_cast, default=False)
 		self.device_uses_virtual_ab = self.get_first_prop(DEVICE_USES_VIRTUAL_AB, data_type=bool_cast, default=False)
@@ -159,7 +166,7 @@ class DeviceInfo:
 		self.use_vulkan = self.get_first_prop(USE_VULKAN, data_type=bool_cast, default=False)
 		self.gms_clientid_base = self.get_first_prop(GMS_CLIENTID_BASE, default=f"android-{self.manufacturer}")
 		self.first_api_level = self.get_first_prop(FIRST_API_LEVEL)
-		self.product_characteristics = self.get_first_prop(PRODUCT_CHARACTERISTICS, default="")
+		self.product_characteristics = self.get_first_prop(PRODUCT_CHARACTERISTICS)
 
 		self.build_security_patch = self.get_first_prop(BUILD_SECURITY_PATCH)
 		self.vendor_build_security_patch = self.get_first_prop(BUILD_VENDOR_SECURITY_PATCH, default=self.build_security_patch)
@@ -177,3 +184,9 @@ class DeviceInfo:
 			raise AssertionError(f'Property {props[0]} could not be found in build.prop')
 		else:
 			return default
+
+	def translate_platform(self, platform):
+		if platform != "default":
+			return PLATFORM_MAPPING[platform]
+		else:
+			return platform
