@@ -25,7 +25,7 @@ def get_files_list(path: Path) -> List[Path]:
 	for i in path.iterdir():
 		if i.is_file():
 			files.append(i)
-		else:
+		elif not i.is_symlink():
 			files.extend(get_files_list(i))
 
 	return files
