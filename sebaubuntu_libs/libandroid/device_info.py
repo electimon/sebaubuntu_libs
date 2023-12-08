@@ -186,7 +186,7 @@ class DeviceInfo:
 			return default
 
 	def translate_platform(self, platform):
-		if platform != "default":
+		if platform != "default" and platform in PLATFORM_MAPPING:
 			return PLATFORM_MAPPING[platform]
 		else:
 			return platform
