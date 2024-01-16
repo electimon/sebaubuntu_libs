@@ -22,7 +22,7 @@ MANIFEST_LOCATION = ["manifest.xml", "etc/vintf/manifest.xml"]
 def get_files_list(path: Path) -> List[Path]:
 	files = []
 
-	for i in path.iterdir():
+	for i in path.glob('*'):
 		if i.is_file():
 			files.append(i)
 		elif not i.is_symlink():
